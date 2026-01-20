@@ -1,80 +1,86 @@
-const overlay = document.getElementById("overlay");
-let player = document.getElementById("player");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 
-player.blur();
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 
-function sendKey(type, key) {
-  window.dispatchEvent(
-    new KeyboardEvent(type, { key, bubbles: true })
-  );
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-// overlay buttons
-document.querySelectorAll(".btn").forEach(btn => {
-  const key = btn.dataset.key;
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+  touch-action: none;
+}
 
-  const block = e => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
+#app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 
-  [
-    "touchstart","touchend",
-    "pointerdown","pointermove","pointerup",
-    "mousedown"
-  ].forEach(ev =>
-    btn.addEventListener(ev, block, { passive: false })
-  );
+#flash-wrapper,
+ruffle-player {
+  width: 100%;
+  height: 100%;
+  display: block;
+  outline: none;
+}
 
-  btn.addEventListener("touchstart", () => sendKey("keydown", key));
-  btn.addEventListener("touchend", () => sendKey("keyup", key));
+#overlay {
+  position: absolute;
+  inset: 0;
+}
 
-  btn.addEventListener("pointerdown", e => {
-    btn.setPointerCapture(e.pointerId);
-    sendKey("keydown", key);
-    btn._drag = true;
-  });
+.btn {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  background: rgba(255,255,255,0.25);
+  color: white;
+  font-size: 24px;
+  border-radius: 12px;
 
-  btn.addEventListener("pointermove", e => {
-    if (!btn._drag) return;
-    btn.style.left = e.clientX - 32 + "px";
-    btn.style.top  = e.clientY - 32 + "px";
-  });
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  btn.addEventListener("pointerup", e => {
-    btn._drag = false;
-    sendKey("keyup", key);
-    btn.releasePointerCapture(e.pointerId);
-  });
-});
+  touch-action: none;
+  outline: none;
+}
 
-// settings
-document.getElementById("toggleOverlay").onchange = e => {
-  overlay.style.display = e.target.checked ? "block" : "none";
-};
+[data-key="ArrowLeft"]  { left: 20px; bottom: 80px; }
+[data-key="ArrowRight"] { left: 140px; bottom: 80px; }
+[data-key="ArrowUp"]    { left: 80px; bottom: 140px; }
+[data-key="ArrowDown"]  { left: 80px; bottom: 20px; }
 
-document.getElementById("toggleFlashClick").onchange = e => {
-  player.style.pointerEvents = e.target.checked ? "none" : "auto";
-};
+.action {
+  right: 30px;
+  bottom: 80px;
+}
 
-// swf loader
-const fileInput = document.getElementById("fileInput");
-document.getElementById("loadSwf").onclick = () => fileInput.click();
+#settings {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0,0,0,0.65);
+  color: white;
+  padding: 8px;
+  font-size: 14px;
+}
 
-fileInput.onchange = () => {
-  const file = fileInput.files[0];
-  if (!file) return;
-
-  const url = URL.createObjectURL(file);
-
-  // recreate player cleanly
-  const wrapper = document.getElementById("flash-wrapper");
-  wrapper.innerHTML = "";
-
-  player = document.createElement("ruffle-player");
-  player.setAttribute("tabindex", "-1");
-  player.setAttribute("src", url);
-  wrapper.appendChild(player);
-
-  player.blur();
-};
+.load-btn {
+  background: #222;
+  color: white;
+  border: 1px solid #444;
+  padding: 6px 10px;
+  font-size: 14px;
+  display: inline-block;
+  cursor: pointer;
+}
