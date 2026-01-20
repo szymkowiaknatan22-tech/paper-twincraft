@@ -24,7 +24,7 @@
 </div>
 
 <div id="settings">
-  <button id="loadSwf">load swf</button><br><br>
+  <label for="fileInput" class="load-btn">load swf</label><br><br>
 
   <label>
     <input type="checkbox" id="toggleOverlay" checked>
@@ -41,8 +41,8 @@
   type="file"
   id="fileInput"
   accept=".swf"
-  style="display:none"
-/>
+  style="position:absolute; left:-9999px;"
+>
 
 <script src="main.js"></script>
 </body>
